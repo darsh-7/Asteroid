@@ -2,51 +2,71 @@ package com.udacity.asteroidradar.main
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.PictureOfDay
-import com.udacity.asteroidradar.api.AsteroidApi.getPictureOfDay
+import com.udacity.asteroidradar.api.ApiMang
 import com.udacity.asteroidradar.database.AsteroidDatabase
-import com.udacity.asteroidradar.database.AsteroidsRepository
-import com.udacity.asteroidradar.database.getDatabase
+import com.udacity.asteroidradar.repository.Repo
 import kotlinx.coroutines.launch
-import com.udacity.asteroidradar.Constants
-import com.udacity.asteroidradar.api.AsteroidApi
-import com.udacity.asteroidradar.databinding.FragmentMainBinding
 
 class MainViewModel(app: Application) : AndroidViewModel(app) {
 
-    private val database = getDatabase(app)
-    private val repository = AsteroidsRepository(database)
+    private val database = AsteroidDatabase.getInstance(app)
+    private val repository = Repo(database)
+    val asteroids = repository.asteroids
 
+    var img = MutableLiveData<String>()
 
-    private val _pictureOfDay = MutableLiveData<PictureOfDay>()
-    val pictureOfDay: LiveData<PictureOfDay>
-
-        get() = _pictureOfDay
-
-    private var _img = MutableLiveData<String>()
-    val img: LiveData<String>
-        get() = _img
-
+    private val _navToDetailFrag = MutableLiveData<Asteroid?>()
+    val navToDetailFrag
+        get() = _navToDetailFrag
 
     init {
+        refreshAsteroids()
         getPictureOfDay()
     }
 
-    private fun getPictureOfDay() {
+
+    fun onAsteroidItemClick(data: Asteroid) {
+        _navToDetailFrag.value = data
+    }
+
+    fun onDetailFragmentNavigated() {
+        _navToDetailFrag.value = null
+    }
+
+    private fun refreshAsteroids() {
         viewModelScope.launch {
             try {
-                val  pictureOfDay = AsteroidApi.getPictureOfDay().await()
-                Log.i("MainViewModel","img url : "+pictureOfDay.url)
-
-                _img.value = pictureOfDay.url
-
+                repository.refreshAsteroids()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        Log.i("MainViewModel","in my view")
+    }
+
+    private fun getPictureOfDay() {
+        viewModelScope.launch {
+            try {
+//                val  pictureOfDay = ApiMang.getPictureOfDay().await()
+                val  pictureOfDay = ApiMang.getPictureOfDay()
+                Log.i("MainViewModel","img url : "+pictureOfDay.url)
+
+                img.value = pictureOfDay.url
 
 
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 }
