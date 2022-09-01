@@ -15,7 +15,7 @@ import retrofit2.http.Query
 
 interface ApiModel {
 
-    @GET("https://api.nasa.gov/neo/rest/v1/feed?start_date=START_DATE&end_date=END_DATE&api_key="+Constants.BASE_URL)
+    @GET("https://api.nasa.gov/neo/rest/v1/feed?start_date=&end_date=&api_key=HcZ8Q6HMbuy0ipnqAoqMPD5xJrTevhz5jj0KAhZV")
     suspend fun getAsteroids(): String
 
     @GET("planetary/apod")
