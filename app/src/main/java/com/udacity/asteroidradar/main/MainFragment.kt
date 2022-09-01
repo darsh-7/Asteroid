@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.Picasso
+import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
 
@@ -28,7 +29,16 @@ class MainFragment : Fragment() {
         viewModel.img.observe(viewLifecycleOwner, Observer {
             Log.i("MainFragment", "img changed " + it)
             Picasso.get().load(it).into(binding.activityMainImageOfTheDay)
+
         })
+        viewModel.imgDescriptions.observe(viewLifecycleOwner, Observer {
+            Log.i("MainFragment", "img descriptions changed " + it)
+            val strFormat = binding.activityMainImageOfTheDay.resources.getString(
+                R.string.nasa_picture_of_day_content_description_format)
+
+            binding.activityMainImageOfTheDay.contentDescription = String.format(strFormat, it)
+        })
+
 
 
         val adapter = AsteroidListAdapter(AsteroidClickListener { asteroidId ->
@@ -57,6 +67,20 @@ class MainFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId==R.id.show_rent_menu) {
+            Log.i("MainFragment","show_rent_menu called")
+            viewModel.clearAsteroids()
+            Constants.DAYS_VIEW = 0
+            viewModel.refreshAsteroids()
+        }
+        else if(item.itemId==R.id.show_all_menu) {
+            Log.i("MainFragment","show_rent_menu called")
+            viewModel.clearAsteroids()
+            Constants.DAYS_VIEW = 7
+            viewModel.refreshAsteroids()
+        }
+
         return true
     }
+
 }

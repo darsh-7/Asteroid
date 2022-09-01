@@ -13,11 +13,14 @@ import androidx.room.Query
 @Dao
 interface RoomDao {
 
-    @Query("select * from asteroid")
+    @Query("select * from asteroid ORDER by closeApproachDate")
     fun getAll(): LiveData<List<AsteroidEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(asteroids: List<AsteroidEntity>)
+
+    @Query("DELETE FROM asteroid")
+    suspend fun clearAll()
 }
 
 @Database(version = 1, entities = [AsteroidEntity::class], exportSchema = false)

@@ -20,6 +20,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     val asteroids = repository.asteroids
 
     var img = MutableLiveData<String>()
+    var imgDescriptions = MutableLiveData<String>()
 
     private val _navToDetailFrag = MutableLiveData<Asteroid?>()
     val navToDetailFrag
@@ -39,10 +40,19 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         _navToDetailFrag.value = null
     }
 
-    private fun refreshAsteroids() {
+     fun refreshAsteroids() {
         viewModelScope.launch {
             try {
                 repository.refreshAsteroids()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+    fun clearAsteroids() {
+        viewModelScope.launch {
+            try {
+                repository.clearAsteroids()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -62,7 +72,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                 Log.i("MainViewModel","img url : "+pictureOfDay.url)
 
                 img.value = pictureOfDay.url
-
+                imgDescriptions.value = pictureOfDay.title
 
             } catch (e: Exception) {
                 e.printStackTrace()

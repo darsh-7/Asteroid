@@ -45,6 +45,7 @@ suspend fun getAsteroids() : List<Asteroid> {
 }
 
     suspend fun getPictureOfDay() = RetroModel.getPictureOfDay(Constants.API_KEY)
+
 }
 
 fun List<Asteroid>.asAsteroidEntities() : List<AsteroidEntity> {
