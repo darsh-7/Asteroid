@@ -9,6 +9,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import java.util.*
 
 @Dao
 interface RoomDao {
@@ -16,11 +17,16 @@ interface RoomDao {
     @Query("select * from asteroid ORDER by closeApproachDate")
     fun getAll(): LiveData<List<AsteroidEntity>>
 
+    @Query("select * from asteroid WHERE closeApproachDate == :startDate AND closeApproachDate == :endDate ORDER BY closeApproachDate ASC")
+    fun getAsteroidsWithinTimeSpan(startDate: String, endDate: String): LiveData<List<AsteroidEntity>>
+
+
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(asteroids: List<AsteroidEntity>)
 
-    @Query("DELETE FROM asteroid")
-    suspend fun clearAll()
+//    @Query("DELETE FROM asteroid")
+//    suspend fun clearAll()
 }
 
 @Database(version = 1, entities = [AsteroidEntity::class], exportSchema = false)

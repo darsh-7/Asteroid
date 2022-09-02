@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.Picasso
-import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
 
@@ -18,6 +17,9 @@ class MainFragment : Fragment() {
     private val viewModel: MainViewModel by lazy {
         ViewModelProvider(this).get(MainViewModel::class.java)
     }
+    val adapter = AsteroidListAdapter(AsteroidClickListener { asteroidId ->
+        viewModel.onAsteroidItemClick(asteroidId)
+    })
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -41,9 +43,6 @@ class MainFragment : Fragment() {
 
 
 
-        val adapter = AsteroidListAdapter(AsteroidClickListener { asteroidId ->
-            viewModel.onAsteroidItemClick(asteroidId)
-        })
         binding.asteroidRecycler.adapter = adapter
         viewModel.asteroids.observe(viewLifecycleOwner) {
             adapter.submitList(it)
@@ -69,18 +68,24 @@ class MainFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId==R.id.show_rent_menu) {
             Log.i("MainFragment","show_rent_menu called")
-            viewModel.clearAsteroids()
-            Constants.DAYS_VIEW = 0
-            viewModel.refreshAsteroids()
+            viewModel.filterAsteroids(1)
+            updateAsteroidsAdapter()
         }
-        else if(item.itemId==R.id.show_all_menu) {
-            Log.i("MainFragment","show_rent_menu called")
-            viewModel.clearAsteroids()
-            Constants.DAYS_VIEW = 7
-            viewModel.refreshAsteroids()
+        else {
+            Log.i("MainFragment","show_all_menu called")
+            viewModel.filterAsteroids(7)
+            updateAsteroidsAdapter()
         }
 
         return true
     }
+
+    private fun updateAsteroidsAdapter() {
+        viewModel.asteroids.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+            Log.i("MainFragment","submitList"+ it)
+        }
+    }
+
 
 }

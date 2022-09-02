@@ -30,28 +30,10 @@ class Repo(private val database: AsteroidDatabase) {
         }
     }
 
-//    private fun filterAsteroids(ast : List<Asteroid>){
-//        val calendar = Calendar.getInstance()
-//        val sdf = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT)
-//        val dateFormat =  sdf.format(Date())
-//        var newAst : MutableList<Asteroid> = mutableListOf()
-//        for (item in ast){
-//
-//            Log.i("AsteroidListAdapter","add new ast not here"+dateFormat.toString()+" -- " + item.closeApproachDate)
-//
-//            if (item.closeApproachDate == dateFormat.toString()) {
-//                Log.i("AsteroidListAdapter","add new ast ok"+calendar.time.toString())
-//                newAst.add(item)
-//            }
-//
+//    suspend fun clearAsteroids() {
+//        withContext(Dispatchers.IO) {
+//            database.AstDao.clearAll()
 //        }
-//        ast.
-//
 //    }
-    suspend fun clearAsteroids() {
-        withContext(Dispatchers.IO) {
-            database.AstDao.clearAll()
-        }
-    }
 
 }

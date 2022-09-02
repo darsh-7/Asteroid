@@ -12,11 +12,13 @@ import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.database.AsteroidEntity
 import retrofit2.http.GET
 import retrofit2.http.Query
+import java.util.*
 
 interface ApiModel {
 
     @GET("https://api.nasa.gov/neo/rest/v1/feed?start_date=&end_date=&api_key=HcZ8Q6HMbuy0ipnqAoqMPD5xJrTevhz5jj0KAhZV")
     suspend fun getAsteroids(): String
+
 
     @GET("planetary/apod")
     suspend fun getPictureOfDay(@Query("api_key") apiKey: String) : PictureOfDay
